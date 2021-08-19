@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: assignment
+description: A Fiori application.
+version: 0.0.1
+modules:
+- name: assignment-dest-content
+  type: com.sap.application.content
+  requires:
+  - name: assignment-dest-srv
+    parameters:
+      content-target: true
+  - name: assignment-repo-host
+    parameters:
+      service-key:
+        name: assignment-repo-host-key
+  - name: assignment-uaa
+    parameters:
+      service-key:
+        name: assignment-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: assignment_repo_host
+          ServiceInstanceName: assignment-html5-srv
+          ServiceKeyName: assignment-repo-host-key
+          sap.cloud.service: assignment
+        - Authentication: OAuth2UserTokenExchange
+          Name: assignment_uaa
+          ServiceInstanceName: assignment-xsuaa-srv
+          ServiceKeyName: assignment-uaa-key
+          sap.cloud.service: assignment
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: assignment-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: assignment-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - assignment.zip
+      name: assignment
+      target-path: resources/
+- name: assignment
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: assignment-dest-srv
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: assignment-dest-srv
+    service-plan: lite
+- name: assignment-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: assignment-xsuaa-srv
+    service-plan: application
+- name: assignment-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: assignment-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
