@@ -54,6 +54,10 @@
                 "settings": {
                     "bundleName": "assignment.i18n.i18n"
                 }
+            },
+            "game": {
+                "type": "sap.ui.model.json.JSONModel",
+                "uri" : "model/game.json"
             }
         },
         "resources": {

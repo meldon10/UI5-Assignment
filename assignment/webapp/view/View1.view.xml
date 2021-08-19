@@ -3,12 +3,53 @@
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     xmlns="sap.m"
+    xmlns:core="sap.ui.core"
 >
 	<Shell id="shell">
 		<App id="app">
 			<pages>
 				<Page id="page" title="{i18n>title}">
-					<content />
+					<content>
+                        <Table id="table"      
+                            items="{
+                                path : 'games>/'
+                            }"
+                           >
+                                <headerToolbar>
+                                    <OverflowToolbar >
+                                        <SearchField id="SearchField" search=".onSearch"/>
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column id="CountryName">
+                                        <Text text="Country"/>
+                                    </Column>
+                                    <Column id="gold">
+                                        <Text text="Gold"/>
+                                    </Column>
+                                     <Column id="silver">
+                                        <Text text="Silver"/>
+                                    </Column>
+                                     <Column id="bronze">
+                                        <Text text="Bronze"/>
+                                    </Column>
+                                    <Column id="total">
+                                        <Text text="Total"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem >
+                                        <cells>
+                                            <Text text="{games>Country}"/>
+                                            <Text text="{games>Gold}"/>
+                                            <Text text="{games>Silver}"/>
+                                            <Text text="{games>Bronze}"/>
+                                            <Text text="{games>Total}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                    </content>
 				</Page>
 			</pages>
 		</App>
